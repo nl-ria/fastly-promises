@@ -11,7 +11,6 @@ describe('#getWafRules', () => {
   let res;
 
   nock(config.mainEntryPoint)
-   .log(console.log)
    .get('/service/79CEhEeP8DKPQQGiXokV5M/wafs/rfjm9II8V21LSeEgyMi9x/rule_statuses?filter[status]=log&page[size]=200&page[number]=1')
    .reply(200, response.getWafRules);
 

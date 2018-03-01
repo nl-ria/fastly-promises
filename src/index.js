@@ -194,6 +194,7 @@ class Fastly {
    * @param tag {string} The WAF tag whose rules are enabled on a service.
    * @return {Promise} The response object representing the completion or failure.
    * @param pageNumber {number} Page number for the of the results output.
+   * @return {Promise} An array of response object(s) representing the completion or failure.
    */
   getWafRulesByTags(wafId = '', tag = '', pageNumber = '') {
       return this.request.get(`/service/${this.service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tag}&page[size]=200&page[number]=${pageNumber}`)
