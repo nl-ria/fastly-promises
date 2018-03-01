@@ -191,25 +191,12 @@ class Fastly {
   /**
    * Gets the WAF Rules associated with a service dependant on WAF tags.
    * @param wafId {string} The WAF ID associated with a service.
-   * @param tags {string} The WAF tag whose rules are enabled on a service.
+   * @param tag {string} The WAF tag whose rules are enabled on a service.
    * @return {Promise} The response object representing the completion or failure.
+   * @param pageNumber {number} Page number for the of the results output.
    */
-  // getWafRulesByTags(wafId = '', tags = config.WAFTags, pageNumber = '') {
-  //   const WafTags= tags.map((tag) =>{
-  //     return this.request.get(`/service/${this.service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tag}&page[size]=200&page[number]=${pageNumber}`)
-  //   });
-  //   return axios.all(WafTags); //returns an array of responses(Type : object)
-  // }
-  getWafRulesByTags(wafId = "", tags = "") {
-    const localRequest=this.request;
-    const service_id=this.service_id;
-    //this.request.get(`/service/${this.service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tag}&page[size]=200&page[number]=${pageNumber}`)
-    this.request.get(`/service/${this.service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tag}`);
-    if
-    return (function getAllPages(page = 1) {
-      return localRequest.get(`/service/${service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tags}&page[number]=${page}&page[size]=200`)
-        .then(response => response.data.length == 200 ? getAllPages(page + 1).then(data => response.data.concat(data)) : response)
-    })();
+  getWafRulesByTags(wafId = '', tag = '', pageNumber = '') {
+      return this.request.get(`/service/${this.service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tag}&page[size]=200&page[number]=${pageNumber}`)
   }
   /**
    * Updates the status of all the rules by a tag.By default, updates all the tags. Doesnt need a PATCH
