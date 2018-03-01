@@ -14,7 +14,7 @@ class Fastly {
     this.request = axios.create({
       baseURL: config.mainEntryPoint,
       timeout: 3000,
-      headers: { 'Fastly-Key': token }
+      headers: {'Fastly-Key': token}
     });
   }
 
@@ -50,7 +50,7 @@ class Fastly {
    * @return {Promise} The response object representing the completion or failure.
    */
   purgeKeys(keys = []) {
-    return this.request.post(`/service/${this.service_id}/purge`, { 'surrogate_keys': keys });
+    return this.request.post(`/service/${this.service_id}/purge`, {'surrogate_keys': keys});
   }
 
   /**
@@ -68,7 +68,7 @@ class Fastly {
    * @return {Promise} The response object representing the completion or failure.
    */
   softPurgeKey(key = '') {
-    return this.request.post(`/service/${this.service_id}/purge/${key}`, undefined, { headers: { 'Fastly-Soft-Purge': 1 } });
+    return this.request.post(`/service/${this.service_id}/purge/${key}`, undefined, {headers: {'Fastly-Soft-Purge': 1}});
   }
 
   /**
@@ -188,7 +188,29 @@ class Fastly {
     return this.request.get(`/service/${this.service_id}/wafs/${wafId}/rule_statuses?filter[status]=${wafStatus}&page[size]=200&page[number]=${pageNumber}`)
   }
 
-
+  /**
+   * Gets the WAF Rules associated with a service dependant on WAF tags.
+   * @param wafId {string} The WAF ID associated with a service.
+   * @param tags {string} The WAF tag whose rules are enabled on a service.
+   * @return {Promise} The response object representing the completion or failure.
+   */
+  // getWafRulesByTags(wafId = '', tags = config.WAFTags, pageNumber = '') {
+  //   const WafTags= tags.map((tag) =>{
+  //     return this.request.get(`/service/${this.service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tag}&page[size]=200&page[number]=${pageNumber}`)
+  //   });
+  //   return axios.all(WafTags); //returns an array of responses(Type : object)
+  // }
+  getWafRulesByTags(wafId = "", tags = "") {
+    const localRequest=this.request;
+    const service_id=this.service_id;
+    //this.request.get(`/service/${this.service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tag}&page[size]=200&page[number]=${pageNumber}`)
+    this.request.get(`/service/${this.service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tag}`);
+    if
+    return (function getAllPages(page = 1) {
+      return localRequest.get(`/service/${service_id}/wafs/${wafId}/rule_statuses?filter[rule][tags][name]=${tags}&page[number]=${page}&page[size]=200`)
+        .then(response => response.data.length == 200 ? getAllPages(page + 1).then(data => response.data.concat(data)) : response)
+    })();
+  }
   /**
    * Updates the status of all the rules by a tag.By default, updates all the tags. Doesnt need a PATCH
    * @param wafId {string} The WAF ID associated with a service.
@@ -209,7 +231,7 @@ class Fastly {
       };
       //Override timeout for this request as it's known to take a long time- updates every rule in the tag one by one
       return this.request.post(`/service/${this.service_id}/wafs/${wafId}/rule_statuses`, data, {
-        timeout:30000,
+        timeout: 30000,
         headers: {
           'Accept': 'application/vnd.api+json',
           'Content-Type': 'application/vnd.api+json'
