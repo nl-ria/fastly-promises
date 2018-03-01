@@ -243,7 +243,6 @@ class Fastly {
         }
       });
     });
-    //console.log(axios.all(tagRequests));
     return axios.all(tagRequests); //returns an array of responses(Type : object)
   }
   /**
